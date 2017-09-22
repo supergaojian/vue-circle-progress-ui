@@ -7,11 +7,11 @@
 content: 内部显示内容 Object required<br>
 >eq: { type: 'img', url: '' }<br>
 >    { type: 'text', text: '' }<br>
->    { type: 'icon', before: '', running: '' } => （基于font awesome）<br>
+>    { type: 'icon', before: '', running: '' } => （基于font awesome，实参为class类）<br>
 
 type: 展示形式 String required<br>
 > 'static' => 静态展示由外部控制展示<br>
-> 'native' => 动态展示当传入duration不为0时自动进行倒计时展示<br>
+> 'auto' => 动态展示当传入duration不为0时自动进行倒计时展示<br>
 progress: 进度条 Int（0 - 100，静态展示中必须传入）<br>
 duration: 运行时长 Int（动态展示中必须传入）<br><br>
 
