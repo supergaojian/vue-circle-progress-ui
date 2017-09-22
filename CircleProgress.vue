@@ -23,11 +23,11 @@
    * content: 内部显示内容 Object required
    *      eq: { type: 'img', url: '' }
    *          { type: 'text', text: '' }
-   *          { type: 'icon', before: '', running: '' } => （基于font awesome）
+   *          { type: 'icon', before: '', running: '' } => （基于font awesome，实参为class类）
    *
    * type: 展示形式 String required
    *      'static' => 静态展示由外部控制展示
-   *      'native' => 动态展示当传入duration不为0时自动进行倒计时展示
+   *      'auto' => 动态展示当传入duration不为0时自动进行倒计时展示
    *
    * progress: 进度条 Int（0 - 100，静态展示中必须传入）
    * duration: 运行时长 Int（动态展示中必须传入）
@@ -44,18 +44,18 @@
     data () {
       return {
         iconClass: this.content.before || 'fa-play', // icon情况下显示的状态
-        nativeProgress: 0, // 动态展示使用进度
+        autoProgress: 0, // 动态展示使用进度
         interval: null
       }
     },
 
     computed: {
-      isNative () {
-        return this.type == 'native';
+      isAuto () {
+        return this.type == 'auto';
       },
 
       current () {
-        return this.isNative ? this.nativeProgress : this.progress;
+        return this.isAuto ? this.autoProgress : this.progress;
       },
 
       rightProgress () {
@@ -88,10 +88,10 @@
 
     watch: {
       duration (val) {
-        if (!this.isNative) return;
+        if (!this.isAuto) return;
 
         const { content } = this;
-        this.nativeProgress = 0;
+        this.autoProgress = 0;
         content.type == 'icon' && (this.iconClass = content.before);
         this.interval && clearInterval(this.interval);
         if (val > 0) {
@@ -102,15 +102,15 @@
 
     methods: {
       setProgress () {
-        if (!this.isNative) return;
+        if (!this.isAuto) return;
 
         const { duration, content } = this;
         let start = 0;
         this.iconClass = content.running;
         this.interval = setInterval(() => {
           start += 1;
-          this.nativeProgress = Math.ceil(start * 10 / duration);
-          if (this.nativeProgress >= 101) {
+          this.autoProgress = Math.ceil(start * 10 / duration);
+          if (this.autoProgress >= 101) {
             content.type == 'icon' && (this.iconClass = content.before);
             clearInterval(this.interval)
           }
