@@ -43,7 +43,7 @@
 
     data () {
       return {
-        iconClass: this.content.endClass || 'fa-play', // icon情况下显示的状态
+        iconClass: this.content.before || 'fa-play', // icon情况下显示的状态
         nativeProgress: 0, // 动态展示使用进度
         interval: null
       }
