@@ -7,10 +7,10 @@
     </div>
     <div class="circle-box" :style="{ backgroundColor: bgColor }">
       <div class="left">
-        <div class="circle" :class="[ !progress && 'reset' ]" :style="{ transform: 'rotateZ(' + leftProgress + 'deg)', backgroundColor: mainColor }"></div>
+        <div class="circle" :class="[ !progress && 'reset' ]" :style="{ transform: 'rotateZ(' + leftProgress + 'deg)', backgroundColor: mainColor, borderRadius: leftRadius }"></div>
       </div>
       <div class="right">
-        <div class="circle" :class="[ !progress && 'reset' ]" :style="{ transform: 'rotateZ(' + rightProgress + 'deg)', backgroundColor: mainColor }"></div>
+        <div class="circle" :class="[ !progress && 'reset' ]" :style="{ transform: 'rotateZ(' + rightProgress + 'deg)', backgroundColor: mainColor, borderRadius: rightRadius }"></div>
       </div>
     </div>
   </div>
@@ -71,6 +71,16 @@
         return (-180 + (current - 50) * 3.6);
       },
 
+      leftRadius () {
+        const { size } = this;
+        return (size / 2) + 'px 0 0 ' + (size / 2) + 'px';
+      },
+
+      rightRadius () {
+        const { size } = this;
+        return '0 ' + (size / 2) + 'px ' + (size / 2) + 'px 0';
+      },
+
       mainColor () {
         const { color } = this;
         if (!color) return 'rgba(0,150,255,1)';
@@ -92,7 +102,7 @@
 
         const { content } = this;
         this.autoProgress = 0;
-        content.type == 'icon' && (this.iconClass = content.before);
+        content.type == 'icon' && (this.iconClass = content.before || 'fa-play');
         this.interval && clearInterval(this.interval);
         if (val > 0) {
           this.setProgress()
@@ -106,12 +116,12 @@
 
         const { duration, content } = this;
         let start = 0;
-        this.iconClass = content.running;
+        this.iconClass = content.running || 'fa-stop';
         this.interval = setInterval(() => {
           start += 1;
           this.autoProgress = Math.ceil(start * 10 / duration);
           if (this.autoProgress >= 101) {
-            content.type == 'icon' && (this.iconClass = content.before);
+            content.type == 'icon' && (this.iconClass = content.before || 'fa-play');
             clearInterval(this.interval)
           }
         }, 100)
@@ -196,7 +206,6 @@
           -webkit-transform: rotateZ(-180deg);
           transform-origin: 100% 50%;
           -webkit-transform-origin: 100% 50%;
-          border-radius: 20px 0 0 20px;
         }
       }
       .right {
@@ -205,7 +214,7 @@
           -webkit-transform: rotateZ(-180deg);
           transform-origin: 0 50%;
           -webkit-transform-origin: 0 50%;
-          border-radius: 0 20px 20px 0;
+          border-radius: 0 100% 100% 0;
         }
       }
     }
