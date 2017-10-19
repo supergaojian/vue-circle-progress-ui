@@ -20,3 +20,4 @@ color: 背景颜色 String （单位为十六进制，默认为#0096ff）<br>
 
 注意：在动态展示形式中duration变化会触发重新倒计时<br>
 注意：旋转时长为0.1s，可自行在transition中修改<br>
+（新）注意：在静态展示中如果使用icon时，如果progress != 0 || progress != 100 会显示running，其它情况显示before

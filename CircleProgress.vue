@@ -1,6 +1,6 @@
 <template>
   <div class="circle-progress" :style="{ width: (size || 40) + 'px', height: (size || 40) + 'px' }">
-    <div class="content-box" :class="[ content.type == 'img' && 'img-box' ]" :style="{ backgroundColor: mainColor }">
+    <div class="content-box" :class="[ content.type == 'img' && 'img-box' ]" :style="{ backgroundColor: mainColor, lineHeight: (size - 6 || 34) + 'px' }">
       <img class="avatar" :src="content.url"  v-if="content.type == 'img'"/>
       <i class="fa" :class="iconClass"  v-if="content.type == 'icon'"></i>
       <span class="text" v-if="content.type == 'text'">{{ content.text }}</span>
@@ -43,13 +43,19 @@
 
     data () {
       return {
-        iconClass: this.content.before || 'fa-play', // icon情况下显示的状态
         autoProgress: 0, // 动态展示使用进度
         interval: null
       }
     },
 
     computed: {
+      iconClass () {
+        const { type, autoProgress, content, progress } = this;
+        if (type == 'auto' && (autoProgress == 0 || autoProgress >= 100) || (type == 'static' && (progress == 0 || progress >= 100))) {
+          return content.before;
+        } else { return content.running }
+      },
+
       isAuto () {
         return this.type == 'auto';
       },
@@ -72,12 +78,14 @@
       },
 
       leftRadius () {
-        const { size } = this;
+        let { size } = this;
+        size = size || 40;
         return (size / 2) + 'px 0 0 ' + (size / 2) + 'px';
       },
 
       rightRadius () {
-        const { size } = this;
+        let { size } = this;
+        size = size || 40;
         return '0 ' + (size / 2) + 'px ' + (size / 2) + 'px 0';
       },
 
@@ -100,9 +108,7 @@
       duration (val) {
         if (!this.isAuto) return;
 
-        const { content } = this;
         this.autoProgress = 0;
-        content.type == 'icon' && (this.iconClass = content.before || 'fa-play');
         this.interval && clearInterval(this.interval);
         if (val > 0) {
           this.setProgress()
@@ -114,14 +120,12 @@
       setProgress () {
         if (!this.isAuto) return;
 
-        const { duration, content } = this;
+        const { duration } = this;
         let start = 0;
-        this.iconClass = content.running || 'fa-stop';
         this.interval = setInterval(() => {
           start += 1;
           this.autoProgress = Math.ceil(start * 10 / duration);
           if (this.autoProgress >= 101) {
-            content.type == 'icon' && (this.iconClass = content.before || 'fa-play');
             clearInterval(this.interval)
           }
         }, 100)
@@ -153,6 +157,7 @@
       width: calc(100% - 6px);
       height: calc(100% - 6px);
       color: #FFFFFF;
+      text-align: center;
       border-radius: 50%;
       border: 2px solid #FFFFFF;
       &.img-box {
@@ -162,6 +167,9 @@
       .text {
         margin: auto;
         font-size: 16px;
+      }
+      .fa-play:before {
+        margin-left: 4px;
       }
       .avatar {
         z-index: 30;
